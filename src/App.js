@@ -1,94 +1,165 @@
-import React, {useState} from 'react'
-import styles from './App.module.css'
+import React from "react"
+import "./App.css";
+import { useState } from "react";
 
-export default function App() {
-    const [ans,setAns]= useState([]);
+function App() {
+  const d = new Date();
+  const date = d.getDate();
+  const month = d.getMonth();
+  const year = d.getFullYear();
+  const fulldate = date + "-" + (month + 1) + "-" + year;
 
+  let sum = 0;
+  const [product, setProduct] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [data, setData] = useState([]);
+  const [name, setName] = useState("");
+  const [isbill, setIsbill] = useState(false);
 
-    function mouseOverh1(){
-       
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setData([
+      ...data,
+      {
+        product: product,
+        quantity: quantity,
+        price: Math.floor(Math.random() * 100),
+      },
+    ]);
+  };
 
-        setAns([...ans,{ 
-        tag : "h1",
-        event: "in",
-        ontime : new Date().toLocaleTimeString()}])
-    }
+  const handeleChangeproduct = (e) => {
+    setProduct(e.target.value);
+  };
 
-    function mouseOverh2(){
-        
-        setAns([...ans, { 
-        tag : "h2",
-        event: "in",
-        ontime : new Date().toLocaleTimeString()}])
-    }
+  const handelChangeQuantity = (e) => {
+    setQuantity(e.target.value);
+  };
 
-    function mouseOverdiv(){
-        
-        setAns([...ans, {
-        tag : "div",
-        event: "in",
-        ontime : new Date().toLocaleTimeString()}])
-    }
+  const handelChangename = (e) => {
+    setName(e.target.value);
+  };
 
-    function mouseOuth1(){
-        
-        setAns([...ans, {
-        tag : "h1",
-        event: "out",
-        ontime : new Date().toLocaleTimeString()}])
-    }
+  const handelCreateBill = () => {
+    setIsbill(true);
+  };
 
-    function mouseOuth2(){
-        
-        setAns([...ans, {
-        tag : "h2",
-        event: "out",
-        ontime : new Date().toLocaleTimeString()}])
-    }
-
-    function mouseOutdiv(){
-        
-        setAns([...ans, {
-        tag : "div",
-        event: "out",
-        ontime : new Date().toLocaleTimeString()}])
-    }
+  const handelClosebill = () => {
+    setIsbill(false);
+  };
 
   return (
-    <div className = {styles.parentCont}>
-        <div className ={styles.tag}>
-            <h1 onMouseOver={mouseOverh1} onMouseOut={mouseOuth1} className = {styles.h1}>h1</h1>
-            <h2 onMouseOver={mouseOverh2} onMouseOut={mouseOuth2} className = {styles.h2}>h2</h2>
-            <div onMouseOver={mouseOverdiv} onMouseOut={mouseOutdiv} className = {styles.div}>div</div>
-        </div>
-        <table className = {styles.table}>
-            <thead>          
-                <tr>
-                    <th className={styles.th}>Tag_Name</th>
-                    <th>Event_Name</th>
-                    <th>Time</th>
-                </tr>
+    <div className="App">
+      <input
+        className="name-input"
+        type="text"
+        placeholder="Costumer Name"
+        onChange={handelChangename}
+      />
 
-            </thead> 
+      {data.map((ele) => {
+        return (
+          <div className="div-container">
+            <div className="input-div">
+              <p>Select Product</p>
+              <select name="" id="" onChange={handeleChangeproduct}>
+                <option value="">Select</option>
+                <option value="Sugar">Sugar</option>
+                <option value="Oats">Oats</option>
+                <option value="Cofee">Cofee</option>
+                <option value="Snaks">Snacks</option>
+              </select>
+            </div>
+
+            <div className="input-div">
+              <p>Select Product</p>
+
+              <input
+                onChange={handelChangeQuantity}
+                type="text"
+                placeholder="Quantity"
+              />
+            </div>
+          </div>
+        );
+      })}
+      <form onSubmit={handleSubmit}>
+        <div className="input-div">
+          <p>Select Product</p>
+          <select name="" id="" onChange={handeleChangeproduct}>
+          <option value="">Select</option>
+            <option value="Sugar">Sugar</option>
+            <option value="Oats">Oats</option>
+            <option value="Cofee">Cofee</option>
+            <option value="Snaks">Snacks</option>
+          </select>
+        </div>
+        <div className="input-div">
+          <p>Select Product</p>
+
+          <input
+            onChange={handelChangeQuantity}
+            type="text"
+            placeholder="Quantity"
+          />
+        </div>
+        <button type="submit">Add More Item</button>
+      </form>
+
+      <hr />
+
+      <button className="create-bill" onClick={handelCreateBill}>
+        Create Bill
+      </button>
+
+      {isbill && (
+        <div>
+          <h4>Customer Name: {name}</h4>
+
+          <h4>Date: {fulldate}</h4>
+
+          {/* //data also */}
+
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+              </tr>
+            </thead>
 
             <tbody>
+              {data.map((item) => {
+                return (
+                  <tr>
+                    <td>{item.product}</td>
+                    <td>{item.price}</td>
+                    <td>{item.quantity}</td>
+                    <td>{+item.quantity * item.price}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <div className="sum-div">
+            <p>Total</p>
 
-                {ans.map((element,key)=>{
-                    return(
-                        <tr key = {key}>
-                            <td>{element.tag}</td>
-                            <td>{element.event}</td>
-                            <td>{element.ontime}</td>
-                        </tr>
-                    )
-                })}
+            <p>
+              {data.forEach((ele) => {
+                sum += ele.price * +ele.quantity;
+              })}
 
-            </tbody> 
+              {sum}
+            </p>
+          </div>
 
-            
-     
-        </table>
-
+          <button onClick={handelClosebill}>close bill</button>
+        </div>
+      )}
     </div>
-  )
+  );
 }
+
+export default App;
